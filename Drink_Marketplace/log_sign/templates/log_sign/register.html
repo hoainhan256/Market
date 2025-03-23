@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'log_sign/css/style.css' %}">
+</head>
+<body>
+    <div class="background"></div>
+    <div class="register-container">
+        <h2>Đăng ký</h2>
+        <form method ="POST" action ="">
+            {% csrf_token %}      
+            <div class="input-group">
+                
+                <label for="email">Email</label>
+                {{form.email}}
+              
+            </div>
+            <div class="input-group">
+               
+                <label for="username">Tên đăng nhập</label>
+                {{form.username}}
+                
+            </div>
+            <div class="input-group">
+                
+                <label for="password">Mật khẩu</label>
+                {{form.password1}}
+               
+            </div>
+            <div class="input-group">
+                
+                <label for="confirm-password">Nhập lại mật khẩu</label>
+                {{form.password2}}
+               
+            </div>
+            <div class="input-group">
+                <button type="submit" class="full-width">Đăng ký</button>
+            </div>
+        </form>
+        <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+    </div>
+
+    <script>
+        function togglePassword(fieldId) {
+            var passwordField = document.getElementById(fieldId);
+            var toggleIcon = passwordField.nextElementSibling;
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.textContent = "🔒";
+            } else {
+                passwordField.type = "password";
+                toggleIcon.textContent = "👁️";
+            }
+        }
+    </script>
+</body>
+</html>
