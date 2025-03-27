@@ -1,13 +1,11 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends 'home/base.html' %}
+{% load static %}
+
+    {% block content %}
     <title>Đăng ký</title>
-    {% load static %}
+ 
     <link rel="stylesheet" href="{% static 'log_sign/css/style.css' %}">
-</head>
-<body>
+
     <div class="background"></div>
     <div class="register-container">
         <h2>Đăng ký</h2>
@@ -38,10 +36,10 @@
                
             </div>
             <div class="input-group">
-                <button type="submit" class="full-width">Đăng ký</button>
+                <button type="submit" class="full-width"> Đăng ký</button>
             </div>
         </form>
-        <p>Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+        <p>Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a></p>
     </div>
 
     <script>
@@ -57,5 +55,4 @@
             }
         }
     </script>
-</body>
-</html>
+    {% endblock %}

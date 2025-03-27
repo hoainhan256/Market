@@ -14,6 +14,7 @@ def register(request):
         form = CreateUserForms(request.POST)
         if form.is_valid:
             form.save()
+            return redirect("login")
     context = {'form':form}
     return render(request, 'log_sign/register.html', context)
 def loginPage(request):
@@ -30,6 +31,6 @@ def loginPage(request):
 
     context = {}
     return render(request, 'log_sign/login.html', context)
-# def logoutPage(request):
-#     logout(request)
-#     return redirect('login')
+def logoutPage(request):
+    logout(request)
+    return redirect('login')
