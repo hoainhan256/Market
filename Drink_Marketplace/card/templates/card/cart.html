@@ -1,0 +1,35 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+    <title>Giỏ Hàng</title>
+
+    <h1>Giỏ Hàng của Bạn</h1>
+
+    {% if cart.items.count > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Tổng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                    <tr>
+                        <td><img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" width="50"></td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.product.price }} VND</td>
+                        <td>{{ item.total_price|floatformat:2 }} VND</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><strong>Tổng tiền: </strong>{{ total_price|floatformat:2 }} VND</p>
+
+    {% else %}
+        <p>Giỏ hàng của bạn đang trống!</p>
+    {% endif %}
+{% endblock %}

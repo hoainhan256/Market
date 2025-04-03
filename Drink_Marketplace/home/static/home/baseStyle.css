@@ -1,10 +1,9 @@
-body {
+html, body {
+    height: 100%;
     margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 .navbar {
@@ -42,13 +41,13 @@ body {
 }
 
 .nav-btn {
-    padding: 8px 15px;
+    padding: 10px 15px;
     border: none;
     border-radius: 5px;
     text-decoration: none;
-    color: white;
-    background-color: #ff5a5f;
-    transition: 0.3s;
+    color: rgb(255, 255, 255);
+    background: linear-gradient(90deg, #ec5c38, #f36947);
+    transition: 0.1s;
 }
 
 .nav-btn:hover {
