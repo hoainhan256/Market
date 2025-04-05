@@ -1,55 +1,60 @@
-# views.py trong app cart
-from django.shortcuts import render, redirect
-from django.http import JsonResponse
+# card/views.py
+
+from django.shortcuts import get_object_or_404, redirect, render
 from product.models import Product
 from .models import Cart, CartItem
 from django.contrib.auth.decorators import login_required
-import json
-
-@login_required
-def add_to_cart(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        product_name = data.get('name')
-        product_price = data.get('price')
-        product_img = data.get('img')
-
-        # Kiểm tra xem sản phẩm có trong cơ sở dữ liệu không
-        try:
-            product = Product.objects.get(name=product_name)
-        except Product.DoesNotExist:
-            return JsonResponse({'success': False, 'message': 'Sản phẩm không tồn tại.'})
-
-        # Kiểm tra xem người dùng đã có giỏ hàng chưa
-        cart, created = Cart.objects.get_or_create(user=request.user)
-
-        # Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
-        cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-
-        if not created:
-            # Nếu sản phẩm đã có trong giỏ hàng, tăng số lượng lên
-            cart_item.quantity += 1
-            cart_item.save()
-
-        return JsonResponse({'success': True})
-
-    return JsonResponse({'success': False, 'message': 'Request method must be POST'})
-
+from django.http import HttpResponse
+from django.http import JsonResponse
 
 
 @login_required
-def cart_view(request):
-    cart = Cart.objects.get(user=request.user)
-    
-    # Tính tổng giá trị của từng sản phẩm trong giỏ hàng
-    cart_items = cart.items.all()
-    total_price = sum(item.total_price() for item in cart_items)
-    
-    context = {
-        'cart': cart,
-        'cart_items': cart_items,
-        'total_price': total_price
-    }
+def add_to_cart(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
 
-    return render(request, 'card/cart.html', context)
+    # Kiểm tra nếu người dùng đã có giỏ hàng, nếu chưa thì tạo mới
+    cart, created = Cart.objects.get_or_create(user=request.user)
 
+    # Kiểm tra nếu sản phẩm đã có trong giỏ
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+
+    # Nếu sản phẩm đã có trong giỏ, tăng số lượng
+    if not created:
+        cart_item.quantity += 1
+    cart_item.save()
+
+    # Debug: In giỏ hàng sau khi thêm sản phẩm
+    print("Giỏ hàng sau khi thêm sản phẩm: ", cart.items.all())
+
+    # Sau khi thêm vào giỏ, chuyển hướng lại trang giỏ hàng
+    return redirect('home')
+@login_required
+def cart_detail(request):
+    cart, created = Cart.objects.get_or_create(user=request.user)
+    items = cart.items.all()  # Đây là nơi lấy ra tất cả các item trong giỏ hàng
+    total = sum(item.total_price() for item in items)
+
+    # Render lại trang giỏ hàng với tất cả các sản phẩm
+    return render(request, 'card/cart.html', {'items': items, 'total': total})
+
+@login_required
+def remove_from_cart(request, item_id):
+    try:
+        # Tìm sản phẩm cần xoá
+        cart_item = CartItem.objects.get(id=item_id, cart__user=request.user)
+        cart_item.delete()
+
+        # Sau khi xoá sản phẩm, kiểm tra lại tổng số lượng và tổng tiền
+        cart = Cart.objects.get(user=request.user)
+        items = cart.items.all()
+        total = sum(item.total_price() for item in items)
+        if not items:
+            # Nếu giỏ hàng trống
+            message = "Giỏ hàng của bạn đã trống."
+            return render(request, 'card/cart.html', {'items': items, 'total': total, 'message': message})
+        
+    except CartItem.DoesNotExist:
+        return redirect('home')
+
+    # Quay lại trang giỏ hàng sau khi xóa
+    return redirect('card:cart_detail')

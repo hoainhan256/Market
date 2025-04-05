@@ -5,7 +5,7 @@
     <title>Đăng ký</title>
  
     <link rel="stylesheet" href="{% static 'log_sign/css/register.css' %}">
-
+    <div class="login-page">
     <div class="background"></div>
     <div class="register-container">
         <h2>Đăng ký</h2>
@@ -41,7 +41,7 @@
         </form>
         <p>Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a></p>
     </div>
-
+</div>
     <script>
         function togglePassword(fieldId) {
             var passwordField = document.getElementById(fieldId);
