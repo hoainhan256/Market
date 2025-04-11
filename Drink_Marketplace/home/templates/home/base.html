@@ -15,19 +15,15 @@
             <input type="text" class="search-bar" placeholder="Tìm kiếm sản phẩm...">
         </div>
         <div class="nav-right">
-            {% if user.is_authenticated %}
-              
-                
-                
+            {% if user.is_authenticated %}                                            
                 <div class="logoutItem">
                    
                     <ul class="logoutUl">
-                        <li class ="account-out"> 
-                            
-                           
+                        <li class ="account-out">                                                      
                             <form class="out">
-                                <a href="/profile" class="nav-btn">Hồ sơ</a>
-                                 <a href="/logout"  class="nav-btn" aria-current="page" href="{% url "logout" %}">Logout </a>
+                                <a href="/history/" class="nav-btn">Hồ sơ</a>
+                                <a href="/cart/" class="nav-btn">🛒 Giỏ Hàng</a>
+                                 <a class="nav-btn" aria-current="page" href="{% url "logout" %}">Logout </a>
                                  <span> hi! {{request.user}} </span>
                             </form>
                         </li>

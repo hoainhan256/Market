@@ -1,0 +1,113 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<title>Giỏ hàng của bạn</title>
+<link rel="stylesheet" href="{% static 'card/cardStyle.css' %}">
+<div class="cart-container">
+    <h1>🛒 Giỏ hàng của bạn</h1>
+
+    {% if items %}
+    <form id="cart-form" method="POST">
+        {% csrf_token %}
+        <table class="cart-table">
+            <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Giá</th>
+                <th>Số lượng</th>
+                <th>Thành tiền</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr class="cart-item" data-price="{{ item.product.price }}">
+                    <td class="product-name">{{ item.product.name }}</td>
+                    <td class="product-price">{{ item.product.price }}₫</td>
+                    <td>
+                        <div class="quantity-control">
+                            <button type="button" class="btn-decrease">−</button>
+                            <input type="number" min="1" value="{{ item.quantity }}" class="quantity-input" name="quantity_{{ item.id }}">
+                            <button type="button" class="btn-increase">+</button>
+                        </div>
+                    </td>
+                        <td class="item-total">{{ item.total_price }}₫</td>
+                    <td>
+                        <form method="POST" action="{% url 'card:remove_from_cart' item.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-remove">🗑</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+
+        <div class="cart-total">
+            <p><strong>Tổng cộng:</strong> <span id="total-amount">{{ total }}₫</span></p>
+        </div>
+
+        <div class="checkout-container">
+            <form method="POST" action="{% url 'card:checkout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-checkout">Thanh toán</button>
+            </form>
+        </div>
+    </form>
+    {% else %}
+    <p class="empty-message">Giỏ hàng của bạn đang trống 🥲</p>
+    {% endif %}
+
+    <div class="back-button">
+        <a href="{% url 'home' %}">← Tiếp tục mua sắm</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const items = document.querySelectorAll(".cart-item");
+
+        function formatCurrency(number) {
+            return new Intl.NumberFormat('vi-VN', {
+                style: 'currency',
+                currency: 'VND'
+            }).format(number);
+        }
+
+        function updateTotals() {
+            let total = 0;
+            items.forEach(row => {
+                const price = parseFloat(row.dataset.price);
+                const quantity = parseInt(row.querySelector(".quantity-input").value);
+                const itemTotal = price * quantity;
+                row.querySelector(".item-total").textContent = formatCurrency(itemTotal);
+                total += itemTotal;
+            });
+            document.getElementById("total-amount").textContent = formatCurrency(total);
+        }
+
+        items.forEach(row => {
+            const input = row.querySelector(".quantity-input");
+            row.querySelector(".btn-increase").addEventListener("click", () => {
+                input.value = parseInt(input.value) + 1;
+                updateTotals();
+            });
+
+            row.querySelector(".btn-decrease").addEventListener("click", () => {
+                if (parseInt(input.value) > 1) {
+                    input.value = parseInt(input.value) - 1;
+                    updateTotals();
+                }
+            });
+
+            input.addEventListener("input", updateTotals);
+        });
+
+        updateTotals();
+    });
+</script>
+
+{% endblock content %}

@@ -1,0 +1,101 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<title>Lịch sử mua hàng</title>
+
+<style>
+    .history-container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 0 20px;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .order-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .order-header {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+        font-size: 1.1rem;
+    }
+
+    .order-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .order-table th, .order-table td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #eee;
+        text-align: left;
+    }
+
+    .order-table th {
+        background-color: #f9f9f9;
+        font-weight: bold;
+    }
+
+    .order-total {
+        text-align: right;
+        padding: 10px 20px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .empty-message {
+        text-align: center;
+        color: #888;
+        margin-top: 100px;
+        font-size: 1.1rem;
+    }
+</style>
+
+<div class="history-container">
+    <h2 style="text-align: center; margin-bottom: 30px;">🛒 Lịch sử mua hàng của bạn</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    Đơn hàng ngày: {{ order.created_at|date:"d/m/Y H:i" }}
+                </div>
+                <table class="order-table">
+                    <thead>
+                        <tr>
+                            <th>Sản phẩm</th>
+                            <th>Số lượng</th>
+                            <th>Đơn giá</th>
+                            <th>Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product.name }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.price|floatformat:0|intcomma }}đ</td>
+                            <td>{{ item.total_price|floatformat:0|intcomma }}đ</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="order-total">
+                    Tổng đơn: {{ order.get_total_price|floatformat:0|intcomma }}đ
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty-message">Bạn chưa mua đơn hàng nào 😢</p>
+    {% endif %}
+</div>
+{% endblock %}
