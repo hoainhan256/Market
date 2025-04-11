@@ -21,6 +21,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Đơn hàng #{self.id} - {self.user.username}"
+
     def get_total_price(self):
         return sum(item.total_price() for item in self.items.all())
 class OrderItem(models.Model):
