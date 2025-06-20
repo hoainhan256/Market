@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'log_sign',
     'home',
     'card',
-    'product'
+    'product',
+    'support_ai',
 ]
 
 MIDDLEWARE = [
@@ -82,11 +83,11 @@ WSGI_APPLICATION = 'Drink_Marketplace.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'django_db',
+        'NAME': 'support_ai',
         'USER': 'root',
-        'PASSWORD': '123456',
-        'HOST': 'db',  # Tên service MySQL trong docker-compose.yml
-        'PORT': '3306',
+        'PASSWORD': '266205',
+        'HOST': 'localhost',  # Tên service MySQL trong docker-compose.yml
+        'PORT': '3307',
     }
 }
 

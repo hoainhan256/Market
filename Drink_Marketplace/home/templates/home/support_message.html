@@ -1,0 +1,43 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+<title>message</title>
+<link href="{% static 'home/mess.css' %}" rel ="stylesheet"/>
+
+<div class="inbox-container">
+<h2>Bình luận cần hỗ trợ</h2>
+<div class="support-comments">
+    {% for comment in comments %}
+        <div class="message-card">
+            <div class="message-header">
+                <strong>{{ comment.user.username }}</strong> - 
+                <small>{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+                <div class="comment-box">
+                    <span class="comment-icon">💬</span>
+                    <p class="comment-content">{{ comment.content }}</p>
+                </div>
+                <a href="{% url 'product_detail' comment.product.id %}">Xem sản phẩm</a>
+            </div>
+            
+            <form action="{% url 'update_comment_status' comment.id %}" method="POST">
+                {% csrf_token %}
+                <label>Trạng thái:</label>
+                <select name="status" class="status-select">
+                    <option value="pending" {% if comment.status == 'pending' %}selected{% endif %}>Chưa xử lý</option>
+                    <option value="processing" {% if comment.status == 'processing' %}selected{% endif %}>Đang xử lý</option>
+                    <option value="delayed" {% if comment.status == 'delayed' %}selected{% endif %}>Tạm hoãn</option>
+                    <option value="resolved" {% if comment.status == 'resolved' %}selected{% endif %}>Đã xử lý</option>
+                </select>
+
+                <label>Ghi chú:</label>
+                <textarea name="note" class="note-box" placeholder="Ghi chú về xử lý">{{ comment.note }}</textarea>
+
+                <button type="submit" class="update-button">Cập nhật</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>Không có bình luận cần hỗ trợ nào.</p>
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

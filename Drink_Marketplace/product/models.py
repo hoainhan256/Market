@@ -44,4 +44,20 @@ class ShippingAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.address
-    
+class Comment(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Chưa xử lý'),
+        ('processing', 'Đang xử lý'),
+        ('delayed', 'Tạm hoãn'),
+        ('resolved', 'Đã xử lý'),
+    ]
+    product = models.ForeignKey(Product, related_name='comments', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # hoặc Customer nếu bạn thích
+    content = models.TextField()
+    rating = models.IntegerField(default=5)  # Thang điểm 1–5
+    created_at = models.DateTimeField(auto_now_add=True)
+    needs_support = models.BooleanField(default=False) 
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    note = models.TextField(blank=True, null=True)
+    def __str__(self):
+        return f'Comment by {self.user.username} on {self.product.name}'
